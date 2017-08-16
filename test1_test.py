@@ -13,6 +13,7 @@ def fakeMainloop():
     print("fakeMainLoop called")
 
 def fakeMainLoop_self(self):
+    # TODO: Förstå varför self-argumentet inte fungerar. Jämför med web-exempel
     print("fakeMainLoop_self called")
 
 class TkAppTests(unittest.TestCase):
@@ -21,6 +22,7 @@ class TkAppTests(unittest.TestCase):
         pass
 
     def test_mainloop_with_GUi(self):
+        # TODO: Förstå varför detta test gör att många GUI öppnas. Testen är inte oberoende!
         root = tk.Tk()
         app = test1.HelloApp(root)
         app.start()
