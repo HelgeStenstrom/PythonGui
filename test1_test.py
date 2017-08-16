@@ -5,22 +5,59 @@ import tkinter as tk
 
 # Based on idea in https://stackoverflow.com/questions/4083796/how-do-i-run-unittest-on-a-tkinter-app
 
-class FakeTk(tk.Tk):
+class FakeApp(test1.HelloApp):
     def mainloop(self):
-        print("FakeTk.mainloop called,")
-        pass
+        print("FakeApp.mainloop called")
+
+def fakeMainloop():
+    print("fakeMainLoop called")
+
+def fakeMainLoop_self(self):
+    print("fakeMainLoop_self called")
 
 class TkAppTests(unittest.TestCase):
-    def test_that_App_can_be_created(self):
-        print("dict Tk 1 = ", tk.__dict__['Tk'])
-        # tk.__dict__['Tk'] = FakeTk
-        print("dict Tk 2 = ", tk.__dict__['Tk'])
-        print("tk.Tk = ", tk.Tk)
-        r = tk.Tk()
-        # print("r = ", r)
-        a = test1.App(r)
-        self.assertIsNotNone(a.mainloop)
-        a.mainloop()
+
+    def setUp(self):
+        pass
+
+    def test_mainloop_with_GUi(self):
+        root = tk.Tk()
+        app = test1.HelloApp(root)
+        app.start()
+
+    def test_fake_mainloop_by_subclassing(self):
+        root = tk.Tk()
+        app = FakeApp(root)
+        app.mainloop()
+
+    def test_fake_mainloop_by_replaced_method(self):
+        root = tk.Tk()
+        app = test1.HelloApp(root)
+        app.mainloop = fakeMainloop
+        app.mainloop()
+
+    def test_changing_start_of_app(self):
+        root = tk.Tk()
+        app = test1.HelloApp(root)
+        app.mainloop = fakeMainloop
+        app.start()
+
+    def test_patch_with_self(self):
+        root = tk.Tk()
+        app = test1.HelloApp(root)
+        app.mainloop = fakeMainLoop_self
+        app.start()
+
+    def test_detecting_mainloop_call(self):
+        root = tk.Tk()
+        app = test1.HelloApp(root)
+        def fakeMainLoop():
+            self.called = True
+            print("inner fake called")
+        app.mainloop = fakeMainLoop
+        app.start()
+        self.assertTrue(self.called)
+
 
 if __name__ == '__main__':
     unittest.main()
