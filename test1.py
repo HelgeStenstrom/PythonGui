@@ -23,8 +23,7 @@ class HelloApp(tk.Frame):
         print("hi there, everyone!")
 
     def start(self):
-        #help(self.mainloop)
-        self.mainloop()
+        self.mainloop(self)
 
 
 def main():

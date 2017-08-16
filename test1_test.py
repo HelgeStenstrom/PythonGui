@@ -7,32 +7,30 @@ import tkinter as tk
 
 class FakeApp(test1.HelloApp):
     def mainloop(self):
-        #print("FakeApp.mainloop called")
         pass
 
-def fakeMainloop():
-    #print("fakeMainLoop called")
+def fakeMainloop(self):
     pass
 
-def fakeMainLoop_self(self="ingen"):
-    # TODO: Förstå varför self-argumentet inte fungerar. Jämför med web-exempel
-    print("fakeMainLoop_self called with ", self)
-    pass
 
 class TkAppTests(unittest.TestCase):
 
     def setUp(self):
         self.root = tk.Tk()
+        self.savedMainLoop = self.root.mainloop
 
     def tearDown(self):
+        self.root.mainloop = self.savedMainLoop
         try:
             self.root.destroy()
         except tk._tkinter.TclError:
             # This is what happens if the destroy function is already called on the root object.
             pass
 
+    @unittest.skip
     def test_mainloop_with_GUi(self):
         app = test1.HelloApp(self.root)
+        print("is this ignored?")
         app.start()
 
     def test_fake_mainloop_by_subclassing(self):
@@ -42,26 +40,23 @@ class TkAppTests(unittest.TestCase):
     def test_fake_mainloop_by_replaced_method(self):
         app = test1.HelloApp(self.root)
         app.mainloop = fakeMainloop
-        app.mainloop()
+        app.mainloop(app)
 
     def test_changing_start_of_app(self):
         app = test1.HelloApp(self.root)
         app.mainloop = fakeMainloop
         app.start()
 
-    def test_patch_with_self(self):
-        app = test1.HelloApp(self.root)
-        app.mainloop = fakeMainLoop_self
-        app.start()
-
     def test_detecting_mainloop_call(self):
         app = test1.HelloApp(self.root)
-        def fakeMainLoop():
+        app.called = False
+        def fakeMainLoop(self):
             self.called = True
-            #print("inner fake called")
         app.mainloop = fakeMainLoop
+
         app.start()
-        self.assertTrue(self.called)
+
+        self.assertTrue(app.called)
 
 
 if __name__ == '__main__':
