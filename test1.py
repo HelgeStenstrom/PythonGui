@@ -1,5 +1,5 @@
 import tkinter as tk
-print("test1.py imported")
+#print("test1.py imported")
 
 class HelloApp(tk.Frame):
     # Based on https://docs.python.org/3.4/library/tkinter.html
@@ -23,7 +23,7 @@ class HelloApp(tk.Frame):
         print("hi there, everyone!")
 
     def start(self):
-        help(self.mainloop)
+        #help(self.mainloop)
         self.mainloop()
 
 
