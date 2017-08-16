@@ -19,40 +19,41 @@ def fakeMainLoop_self(self):
 class TkAppTests(unittest.TestCase):
 
     def setUp(self):
-        pass
+        self.root = tk.Tk()
+
+    def tearDown(self):
+        try:
+            self.root.destroy()
+        except tk._tkinter.TclError:
+            # This is what happens if the destroy function is already called on the root object.
+            pass
 
     def test_mainloop_with_GUi(self):
         # TODO: Förstå varför detta test gör att många GUI öppnas. Testen är inte oberoende!
-        root = tk.Tk()
-        app = test1.HelloApp(root)
+        app = test1.HelloApp(self.root)
         app.start()
 
     def test_fake_mainloop_by_subclassing(self):
-        root = tk.Tk()
-        app = FakeApp(root)
+        app = FakeApp(self.root)
         app.mainloop()
 
     def test_fake_mainloop_by_replaced_method(self):
-        root = tk.Tk()
-        app = test1.HelloApp(root)
+        app = test1.HelloApp(self.root)
         app.mainloop = fakeMainloop
         app.mainloop()
 
     def test_changing_start_of_app(self):
-        root = tk.Tk()
-        app = test1.HelloApp(root)
+        app = test1.HelloApp(self.root)
         app.mainloop = fakeMainloop
         app.start()
 
     def test_patch_with_self(self):
-        root = tk.Tk()
-        app = test1.HelloApp(root)
+        app = test1.HelloApp(self.root)
         app.mainloop = fakeMainLoop_self
         app.start()
 
     def test_detecting_mainloop_call(self):
-        root = tk.Tk()
-        app = test1.HelloApp(root)
+        app = test1.HelloApp(self.root)
         def fakeMainLoop():
             self.called = True
             print("inner fake called")
