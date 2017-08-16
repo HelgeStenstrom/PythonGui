@@ -5,12 +5,13 @@ import tkinter as tk
 
 # Based on idea in https://stackoverflow.com/questions/4083796/how-do-i-run-unittest-on-a-tkinter-app
 
+def fakeMainloop(self):
+    pass
+
+
 class FakeApp(test1.HelloApp):
     def mainloop(self):
         pass
-
-def fakeMainloop(self):
-    pass
 
 
 class TkAppTests(unittest.TestCase):
@@ -50,8 +51,10 @@ class TkAppTests(unittest.TestCase):
     def test_detecting_mainloop_call(self):
         app = test1.HelloApp(self.root)
         app.called = False
-        def fakeMainLoop(self):
-            self.called = True
+
+        def fakeMainLoop(other):
+            other.called = True
+
         app.mainloop = fakeMainLoop
 
         app.start()
