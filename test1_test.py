@@ -14,9 +14,9 @@ def fakeMainloop():
     #print("fakeMainLoop called")
     pass
 
-def fakeMainLoop_self(self):
+def fakeMainLoop_self(self="ingen"):
     # TODO: Förstå varför self-argumentet inte fungerar. Jämför med web-exempel
-    print("fakeMainLoop_self called")
+    print("fakeMainLoop_self called with ", self)
     pass
 
 class TkAppTests(unittest.TestCase):
@@ -31,7 +31,7 @@ class TkAppTests(unittest.TestCase):
             # This is what happens if the destroy function is already called on the root object.
             pass
 
-    def qtest_mainloop_with_GUi(self):
+    def test_mainloop_with_GUi(self):
         app = test1.HelloApp(self.root)
         app.start()
 
