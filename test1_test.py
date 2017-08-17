@@ -9,12 +9,12 @@ def fakeMainloop(self):
     pass
 
 
-class FakeApp(test1.HelloApp):
+class FakeHelloApp(test1.HelloApp):
     def mainloop(self):
         pass
 
-
-class TkAppTests(unittest.TestCase):
+@unittest.skip
+class HelloAppTests(unittest.TestCase):
 
     def setUp(self):
         self.root = tk.Tk()
@@ -35,7 +35,7 @@ class TkAppTests(unittest.TestCase):
         app.start()
 
     def test_fake_mainloop_by_subclassing(self):
-        app = FakeApp(self.root)
+        app = FakeHelloApp(self.root)
         app.mainloop()
 
     def test_fake_mainloop_by_replaced_method(self):
@@ -61,6 +61,38 @@ class TkAppTests(unittest.TestCase):
 
         self.assertTrue(app.called)
 
+
+class ButtonsAppTests(unittest.TestCase):
+    def setUp(self):
+        self.root = tk.Tk()
+        self.app = test1.ButtonApp(self.root)
+
+    def test_that_app_can_be_started(self):
+        self.app.start()
+
+    def test_that_click_list_is_initially_empty(self):
+        self.assertEqual(self.app.clicks, [])
+
+    def test_that_calling_click_detector_adds_to_click_list(self):
+        self.app.clickDetector("one")
+        self.app.clickDetector("two")
+        self.assertEqual(self.app.clicks, ["one", "two"])
+
+
+    def test_manually_that_Quit_quits(self):
+
+        self.assertFalse(self.app.started)
+        self.assertFalse(self.app.stopped)
+
+        self.app.start()
+
+        self.assertTrue(self.app.started)
+        self.assertTrue(self.app.stopped)
+
+    def Qtest_manually_that_button_is_clicked(self):
+        print("Click buttons in order, end with Quit")
+
+        pass
 
 if __name__ == '__main__':
     unittest.main()
