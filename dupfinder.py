@@ -6,6 +6,9 @@ class ExampleClass:
     def __init__(self):
         self.created = True
 
+class File:
+    def __init__(self, file):
+        pass
 
 class MyCollection:
 

@@ -20,6 +20,16 @@ class MakeTestFiles:
     pass
 
 
+class FileTests(TestCase):
+
+    # TODO: platform-independent test files
+    def test_object_creation(self):
+        path = "/tmp/testfile"
+        fo = df.File(path)
+
+    def QQQtest_that_file_has_a_length(self):
+        pass
+
 class MyCollectionTest(TestCase):
 
     def test_that_item_can_be_added(self):
