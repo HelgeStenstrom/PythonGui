@@ -14,12 +14,6 @@ import dupfinder as df
 
 # Hur ska jag testa en funktion som hittar filer?
 
-# TODO: Funktion som jämför två filer, och använder sig av extern funktion för jämförelsen
-
-# TODO: en löv-cell beskrivning av en fil
-
-class MakeTestFiles:
-    pass
 
 class HashTests(TestCase):
     def setUp(self):
@@ -39,7 +33,6 @@ class HashTests(TestCase):
 
 class FileTests(TestCase):
 
-    # TODO: platform-independent test files
     def test_object_creation(self):
         file = tempfile.NamedTemporaryFile()
         path = file.name
@@ -57,6 +50,33 @@ class FileTests(TestCase):
 
         aFile.close()
 
+class DupFinderTests(TestCase):
+
+    def fileWriter(self, name, contents):
+        self.dir = tempfile.TemporaryDirectory().name
+        f = tempfile.NamedTemporaryFile(prefix=name)
+        f.write(contents)
+        f.flush()
+        return f
+
+
+    def setUp(self):
+        self.contents1 = b"one"
+        self.contents2 = b"two"
+        self.contents3 = b"three"
+        self.fileWriter("f1", self.contents1)
+        self.fileWriter("f2a", self.contents2)
+        self.fileWriter("f2b", self.contents2)
+        self.fileWriter("f3a", self.contents3)
+        self.fileWriter("f3b", self.contents3)
+        self.fileWriter("f3c", self.contents3)
+
+    def test_that_dups_are_found(self):
+        dir = self.dir
+        print("scanning ", dir)
+        dups = df.findDups(dir)
+        print("dups:", dups)
+
 
 
 class MyCollectionTest(TestCase):
@@ -68,17 +88,3 @@ class MyCollectionTest(TestCase):
         c.add(a_value)
 
         self.assertTrue(c.has(a_value))
-
-
-class ComparableTests(TestCase):
-
-    def QQtest_that_files_with_same_length_are_called_equal(self):
-        pass
-
-
-class TestExampleClass(TestCase):
-
-    def test_that_class_can_be_created(self):
-        c = df.ExampleClass()
-        self.assertIsInstance(c, df.ExampleClass)
-        # print("Success!")

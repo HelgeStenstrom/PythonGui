@@ -12,10 +12,21 @@ def hashfile(path, blocksize = 65536):
     afile.close()
     return hasher.hexdigest()
 
-class ExampleClass:
-
-    def __init__(self):
-        self.created = True
+def findDups(parentFolder):
+    dups = {}
+    for dirName, subdirs, fileList in os.walk(parentFolder):
+        print('Scanning %s...' % dirName)
+        for filename in fileList:
+            # Get the path to the file
+            path = os.path.join(dirName, filename)
+            # Calculate hash
+            file_hash = hashfile(path)
+            # Add or append the file path
+            if file_hash in dups:
+                dups[file_hash].append(path)
+            else:
+                dups[file_hash] = [path]
+    return dups
 
 class File:
     def __init__(self, file):
