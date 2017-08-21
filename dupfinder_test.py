@@ -1,4 +1,6 @@
 from unittest import TestCase
+import tempfile
+
 import dupfinder as df
 
 # Program som hittar dublett-filer.
@@ -19,16 +21,43 @@ import dupfinder as df
 class MakeTestFiles:
     pass
 
+class HashTests(TestCase):
+    def setUp(self):
+        self.f = tempfile.NamedTemporaryFile()
+
+    def tearDown(self):
+        self.f.close()
+
+    def testKnownStringHash(self):
+        string  = b"abc"
+        knownhash = "900150983cd24fb0d6963f7d28e17f72"
+        self.f.write(string)
+        self.f.flush()
+        hash = df.hashfile(self.f.name)
+        self.assertEqual(hash, knownhash)
+
 
 class FileTests(TestCase):
 
     # TODO: platform-independent test files
     def test_object_creation(self):
-        path = "/tmp/testfile"
+        file = tempfile.NamedTemporaryFile()
+        path = file.name
         fo = df.File(path)
 
-    def QQQtest_that_file_has_a_length(self):
-        pass
+    def test_that_file_has_a_length(self):
+        aFile = tempfile.NamedTemporaryFile()
+        l = 17 # arbitrary length
+        aFile.write(b"x" * l)
+        aFile.flush()
+
+        fo = df.File(aFile.name)
+        print("längden är", fo.length())
+        self.assertEqual(fo.length(), l)
+
+        aFile.close()
+
+
 
 class MyCollectionTest(TestCase):
 
@@ -44,8 +73,7 @@ class MyCollectionTest(TestCase):
 class ComparableTests(TestCase):
 
     def QQtest_that_files_with_same_length_are_called_equal(self):
-
-        f1 = Comparable(fn1)
+        pass
 
 
 class TestExampleClass(TestCase):
@@ -54,4 +82,3 @@ class TestExampleClass(TestCase):
         c = df.ExampleClass()
         self.assertIsInstance(c, df.ExampleClass)
         # print("Success!")
-
