@@ -55,22 +55,26 @@ class FileTests(TestCase):
 class DupFinderTests(TestCase):
 
     def fileWriter(self, name, contents):
-        self.dir = tempfile.TemporaryDirectory().name
-        f = tempfile.NamedTemporaryFile(prefix=name)
-        f.write(contents)
+
+        f = tempfile.NamedTemporaryFile(prefix=name, dir=self.dir)
+        f.write(str.encode(contents))
         f.flush()
         return f
 
+        # TODO: Lös problemet med att filen inte tycks vara en riktig fil, utan en socket,
+        # och att den inte är läsbar med open(path 'rb')
+
     def setUp(self):
-        self.contents1 = b"one"
-        self.contents2 = b"two"
-        self.contents3 = b"three"
-        self.fileWriter("f1", self.contents1)
-        self.fileWriter("f2a", self.contents2)
-        self.fileWriter("f2b", self.contents2)
-        self.fileWriter("f3a", self.contents3)
-        self.fileWriter("f3b", self.contents3)
-        self.fileWriter("f3c", self.contents3)
+        self.dir = tempfile.gettempdir()  # TemporaryDirectory().name
+
+        fnames = ["f-"+str(i) for i in range (1,20)]
+        thelist = zip(fnames, 1*["One"] +
+                      2 * [ "Two"] +
+                      3 * ["Three"])
+        thelist = list(thelist)
+
+        self.fileObjects = [self.fileWriter(fname, contents) for (fname, contents) in thelist]
+        pass
 
     def test_that_dups_are_found(self):
         dir = self.dir
