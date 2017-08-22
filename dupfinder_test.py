@@ -1,6 +1,6 @@
 from unittest import TestCase
 import tempfile
-
+# http://docs.python.org/3/library/tempfile.html
 import dupfinder as df
 
 # Program som hittar dublett-filer.
@@ -23,10 +23,11 @@ class HashTests(TestCase):
         self.f.close()
 
     def testKnownStringHash(self):
-        string  = b"abc"
+        string = b"abc"
         knownhash = "900150983cd24fb0d6963f7d28e17f72"
         self.f.write(string)
         self.f.flush()
+        # TODO: Förstå varför filen inte tycks bli skriven i Windows. Filen finns, men utan innehåll.
         hash = df.hashfile(self.f.name)
         self.assertEqual(hash, knownhash)
 
@@ -39,16 +40,17 @@ class FileTests(TestCase):
         fo = df.File(path)
 
     def test_that_file_has_a_length(self):
-        aFile = tempfile.NamedTemporaryFile()
-        l = 17 # arbitrary length
-        aFile.write(b"x" * l)
-        aFile.flush()
+        a_file = tempfile.NamedTemporaryFile()
+        l = 17  # arbitrary length
+        a_file.write(b"x" * l)
+        a_file.flush()
 
-        fo = df.File(aFile.name)
+        fo = df.File(a_file.name)
         print("längden är", fo.length())
         self.assertEqual(fo.length(), l)
 
-        aFile.close()
+        a_file.close()
+
 
 class DupFinderTests(TestCase):
 
@@ -58,7 +60,6 @@ class DupFinderTests(TestCase):
         f.write(contents)
         f.flush()
         return f
-
 
     def setUp(self):
         self.contents1 = b"one"
@@ -76,7 +77,6 @@ class DupFinderTests(TestCase):
         print("scanning ", dir)
         dups = df.findDups(dir)
         print("dups:", dups)
-
 
 
 class MyCollectionTest(TestCase):
