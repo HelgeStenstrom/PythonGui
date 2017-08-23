@@ -56,9 +56,11 @@ class DupFinderTests(TestCase):
 
     def fileWriter(self, name, contents):
 
-        f = tempfile.NamedTemporaryFile(prefix=name, dir=self.dir)
+        f = tempfile.NamedTemporaryFile(prefix=name, dir=self.dirName, delete=False)
         f.write(str.encode(contents))
         f.flush()
+        # TODO: Close reading, so that the file is readable on Windows
+        # f.close()
         return f
 
         # TODO: Lös problemet med att filen inte tycks vara en riktig fil, utan en socket,
@@ -66,7 +68,14 @@ class DupFinderTests(TestCase):
 
     def setUp(self):
         # TODO: put test files in their own directory, so that not all files in the temp dir are tested.
-        self.dir = tempfile.gettempdir()  # TemporaryDirectory().name
+        self.dir1 = tempfile.gettempdir()  # TemporaryDirectory().name
+        self.dir2 = tempfile.TemporaryDirectory(prefix="myTempDir")
+        print("Type gettempdir() = ", type(self.dir1))
+        print("Type TemporaryDirectory() = ", type(self.dir2))
+        print("gettempdir() = ", self.dir1)
+        print("TemporaryDirectory() = ", self.dir2)
+        self.dirName = self.dir2.name
+        print("Type dirName = ", type(self.dirName))
 
         fnames = ["f-"+str(i) for i in range (1,20)]
         thelist = zip(fnames, 1*["One"] +
@@ -78,7 +87,7 @@ class DupFinderTests(TestCase):
         pass
 
     def test_that_dups_are_found(self):
-        dir = self.dir
+        dir = self.dirName
         print("scanning ", dir)
         dups = df.findDups(dir)
         print("dups:", dups)
