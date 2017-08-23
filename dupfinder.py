@@ -20,12 +20,15 @@ def findDups(parentFolder):
             # Get the path to the file
             path = os.path.join(dirName, filename)
             # Calculate hash
-            file_hash = hashfile(path)
-            # Add or append the file path
-            if file_hash in dups:
-                dups[file_hash].append(path)
-            else:
-                dups[file_hash] = [path]
+            try:
+                file_hash = hashfile(path)
+                # Add or append the file path
+                if file_hash in dups:
+                    dups[file_hash].append(path)
+                else:
+                    dups[file_hash] = [path]
+            except PermissionError:
+                pass
     return dups
 
 class File:

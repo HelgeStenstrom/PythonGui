@@ -65,6 +65,7 @@ class DupFinderTests(TestCase):
         # och att den inte är läsbar med open(path 'rb')
 
     def setUp(self):
+        # TODO: put test files in their own directory, so that not all files in the temp dir are tested.
         self.dir = tempfile.gettempdir()  # TemporaryDirectory().name
 
         fnames = ["f-"+str(i) for i in range (1,20)]
