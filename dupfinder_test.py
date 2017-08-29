@@ -28,8 +28,8 @@ class HashTests(TestCase):
         self.f.write(string)
         self.f.flush()
         # TODO: Förstå varför filen inte tycks bli skriven i Windows. Filen finns, men utan innehåll.
-        hash = df.hashfile(self.f.name)
-        self.assertEqual(hash, knownhash)
+        filehash = df.hashfile(self.f.name)
+        self.assertEqual(filehash, knownhash)
 
 
 class FileTests(TestCase):
@@ -56,10 +56,10 @@ class DupFinderTests(TestCase):
 
     def fileWriter(self, name, contents):
 
-        f = tempfile.NamedTemporaryFile(prefix=name, dir=self.dirName, delete=False)
+        f = open(self.dir.name + "/" + name, "w+b")
         f.write(str.encode(contents))
         f.flush()
-        # TODO: Close reading, so that the file is readable on Windows
+        # TODO: Close reading, so that the file is readable on Windows, if it helps
         # f.close()
         return f
 
@@ -67,19 +67,15 @@ class DupFinderTests(TestCase):
         # och att den inte är läsbar med open(path 'rb')
 
     def setUp(self):
-        # TODO: put test files in their own directory, so that not all files in the temp dir are tested.
-        self.dir1 = tempfile.gettempdir()  # TemporaryDirectory().name
-        self.dir2 = tempfile.TemporaryDirectory(prefix="myTempDir")
-        print("Type gettempdir() = ", type(self.dir1))
-        print("Type TemporaryDirectory() = ", type(self.dir2))
-        print("gettempdir() = ", self.dir1)
-        print("TemporaryDirectory() = ", self.dir2)
-        self.dirName = self.dir2.name
-        print("Type dirName = ", type(self.dirName))
+        self.dir = tempfile.TemporaryDirectory(prefix="myTempDir-")
 
-        fnames = ["f-"+str(i) for i in range (1,20)]
+        print("Type TemporaryDirectory() = ", type(self.dir))
+        print("TemporaryDirectory() = ", self.dir.name)
+        print("Type dirName = ", type(self.dir.name))
+
+        fnames = ["f-"+str(i) for i in range(1, 20)]
         thelist = zip(fnames, 1*["One"] +
-                      2 * [ "Two"] +
+                      2 * ["Two"] +
                       3 * ["Three"])
         thelist = list(thelist)
 
@@ -87,10 +83,14 @@ class DupFinderTests(TestCase):
         pass
 
     def test_that_dups_are_found(self):
-        dir = self.dirName
-        print("scanning ", dir)
-        dups = df.findDups(dir)
-        print("dups:", dups)
+        folder = self.dir.name
+        #print("scanning ", dir)
+        dups = df.findDups(folder)
+        dup_lengths = [len(dups[item]) for item in dups]
+        dup_lengths = list(dup_lengths)
+        dup_lengths.sort()
+        self.assertEqual(dup_lengths, [1, 2, 3], "Antalet filer av varje slag")
+        #print("dups:", dups)
 
 
 class MyCollectionTest(TestCase):
