@@ -14,6 +14,7 @@ class WarehouseImpl:
     def getInventory(self, good):
         return self.inventory[good]
 
+
 class Order:
     def __init__(self, good, count):
         self.good = good
@@ -28,3 +29,16 @@ class Order:
 
     def isFilled(self):
         return self.filled
+
+
+# From Python documentation
+# https://docs.python.org/3/library/unittest.mock-examples.html#mocking-classes
+class Foo:
+    def method(self):
+        pass
+
+
+class Bar:
+    def some_function(self):
+        instance = Foo()
+        return instance.method()

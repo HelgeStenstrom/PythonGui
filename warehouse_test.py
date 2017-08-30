@@ -8,16 +8,15 @@ from unittest.mock import MagicMock
 TALISKER = "Talisker"
 HIGHLAND_PARK = "Highland Park"
 
+
 class OrderStateTests(unittest.TestCase):
 
     def __init__(self, args):
         super().__init__(args)
-        #self.TALISKER = "Talisker"
-        #self.HIGHLAND_PARK = "Highland Park"
         self.warehouse = w.WarehouseImpl()
 
-
     def setUp(self):
+        # The warehose is a collaborator.
         self.warehouse.add(TALISKER, 50)
         self.warehouse.add(HIGHLAND_PARK, 25)
 
@@ -38,22 +37,41 @@ class OrderStateTests(unittest.TestCase):
 class OrderInteractionTester(unittest.TestCase):
     pass
 
-    def   testFillingRemovesInventoryIfInStock(self):
+    def testFillingRemovesInventoryIfInStock(self):
         # setup - data
-        order =  w.Order(TALISKER, 50)
-        # warehouseMock =  Mock(Warehouse.class);
+        order = w.Order(TALISKER, 50)
 
-        wh = w.WarehouseImpl()
+        # The collaborator
+        # Java:
+        #  Mock warehouseMock = new Mock(Warehouse.class);
+        warehouseMock = MagicMock()
 
+        # warehouseMock =  Mock(Warehouse)
+        order.fill = MagicMock(name='fill')
 
-        # setup expectations
+        # setup expectations, maybe not here in Python
 
         # exercise
-        order.filled(wh)
+        order.fill(warehouseMock)
 
         # verify
+        order.fill.assert_called_once()
+        # warehouseMock.
+
+    def testFillingRemovesInventoryIfInStock_usingWith(self):
+        # setup - data
+        order = w.Order(TALISKER, 50)
+
+        with unittest.mock.patch('warehouse.WarehouseImpl') as mock:
+            order.fill(mock)
+            pass
 
 
-
-
-
+class LearnPythonExample(unittest.TestCase):
+    def testTheExample(self):
+        barInstance = w.Bar()
+        with unittest.mock.patch('warehouse.Foo') as mock:
+            anInstance = mock.return_value
+            anInstance.method.return_value = 'the result'
+            result = barInstance.some_function()
+            self.assertEqual(result, 'the result', 'return value matching')
