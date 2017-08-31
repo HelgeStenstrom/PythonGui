@@ -66,6 +66,15 @@ class OrderInteractionTester(unittest.TestCase):
             order.fill(mock)
             pass
 
+    @unittest.mock.patch('warehouse.WarehouseImpl')
+    # TypeError: testWithDecorator() takes 1 positional argument but 2 were given
+    def testWithDecorator(self, arg):
+        print("testWithDecorator called with arg = ", arg)
+        print("its arg has ", dir(arg))
+        print("its type is", type(arg))
+        self.assertEqual(arg.name, "WarehouseImpl")
+        pass
+
 
 class LearnPythonExample(unittest.TestCase):
     def testTheExample(self):
