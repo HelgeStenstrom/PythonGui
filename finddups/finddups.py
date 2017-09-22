@@ -8,7 +8,7 @@
 
 import argparse
 import os
-import md5
+# import md5
 import hashlib
 
 
@@ -65,20 +65,22 @@ def sameMd5(files):
     return hashes[0] == hashes[-1]
 
 
-parser = argparse.ArgumentParser()
-parser.add_argument("start", help="directory to start the search from")
-args = parser.parse_args()
-startDir = args.start
-print "Starting search from %s" % startDir
-fl = getFileList(startDir)
-#print "fl = ", fl
-dd = dictOfSizes(fl)
-#print "dd = ", dd
-dd2 = sieveSameSize(dd)
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("start", help="directory to start the search from")
+    args = parser.parse_args()
+    startDir = args.start
+    print("Starting search from %s" % startDir)
+    fl = getFileList(startDir)
+    # print "fl = ", fl
+    dd = dictOfSizes(fl)
+    # print "dd = ", dd
+    dd2 = sieveSameSize(dd)
+    # print "dd2 = ", dd2
+    for size in dd2:
+        if sameMd5(dd2[size]):
+            print("%s: %g duplicates" % (dd2[size][0], len(dd2[size])))
 
-#print "dd2 = ", dd2
-for size in dd2:
-    if sameMd5(dd2[size]):
-        print "%s: %g duplicates" % ( dd2[size][0], len(dd2[size]))
 
-
+if __name__ == "__main__":
+    main()
