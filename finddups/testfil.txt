@@ -1,0 +1,1 @@
+en fil som det ska göras md5 på.
