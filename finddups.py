@@ -13,18 +13,18 @@ import os
 import hashlib
 
 
-def getFileList(startDir):
-    fileList = []
+def getFileList(start_dir):
+    file_list = []
 
-    for root, dirs, files in os.walk(startDir):
+    for root, dirs, files in os.walk(start_dir):
         for name in files:
             fullname = os.path.join(root, name)
-            fileList += [fullname]
-    return fileList
+            file_list += [fullname]
+    return file_list
 
 
-def dictOfSizes(fileList):
-    sizes = [(os.stat(filename).st_size, filename) for filename in fileList]
+def dictOfSizes(file_list):
+    sizes = [(os.stat(filename).st_size, filename) for filename in file_list]
 
     d = {}
     for f in sizes:
@@ -62,9 +62,9 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("start", help="directory to start the search from")
     args = parser.parse_args()
-    startDir = args.start
-    print("Starting search from %s" % startDir)
-    fl = getFileList(startDir)
+    start_dir = args.start
+    print("Starting search from %s" % start_dir)
+    fl = getFileList(start_dir)
     dd = dictOfSizes(fl)
     dd2 = sieveSameSize(dd)
     for size in dd2:
