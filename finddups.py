@@ -6,14 +6,15 @@
 # find files with the same md5 sum (but only if the size is the same)
 
 # TODO: make compatible with python3. There are unicode problems.
-
 import argparse
+
 import os
 # import md5
 import hashlib
-
+from collections import defaultdict
 
 def getFileList(start_dir):
+    """Returns a list of files in the traversed directory tree"""
     file_list = []
 
     for root, dirs, files in os.walk(start_dir):
@@ -21,6 +22,19 @@ def getFileList(start_dir):
             fullname = os.path.join(root, name)
             file_list += [fullname]
     return file_list
+
+
+def getFileDict(start_dir):
+    aDict = defaultdict(list)
+
+    for root, dirs, files in os.walk(start_dir):
+        for name in files:
+            fullname = os.path.join(root, name)
+            if name in aDict:
+                aDict[name] += [fullname]
+            else:
+                aDict[name] = [fullname]
+    return aDict
 
 
 def dictOfSizes(file_list):
@@ -46,8 +60,9 @@ def sieveSameSize(d):
 
 def myMd5(filename):
     m = hashlib.md5()
-    f = open(filename).read()
-    m.update(f)
+    with open(filename, "r") as f:
+        contents = f.read()
+    m.update(contents.encode('utf-8'))
     return m.hexdigest()
 
 
@@ -65,6 +80,7 @@ def main():
     start_dir = args.start
     print("Starting search from %s" % start_dir)
     fl = getFileList(start_dir)
+    fdict = getFileDict(start_dir)
     dd = dictOfSizes(fl)
     dd2 = sieveSameSize(dd)
     for size in dd2:
