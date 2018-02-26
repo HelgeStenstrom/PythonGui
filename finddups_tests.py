@@ -41,8 +41,9 @@ class FunctionTests(unittest.TestCase):
         aDict = finddups.getFileDict(startDir)
 
         # Verify
-        self.assertIn(["exampleFiles/adir/a.txt"], aDict.values(), "find a file that is in the folder")
-
+        self.assertIn(["exampleFiles/testfil.txt"], aDict.values(), "find a file that is in the folder")
+        dups = [aDict[hash] for hash in aDict if len(aDict[hash]) > 1]
+        self.assertIn("exampleFiles/bdir/b.txt", dups[0])
 
 
 class Md5Tests(unittest.TestCase):

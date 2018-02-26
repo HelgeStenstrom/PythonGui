@@ -25,19 +25,23 @@ def getFileList(start_dir):
 
 
 def getFileDict(start_dir):
+    """Returns a dict of all found files, with the md5 of files as key, and the full name (path) as value."""
+    # Man skulle kunna ha hash-funktionen (myMd5) som argument, så den blir utbytbar.
     aDict = defaultdict(list)
 
     for root, dirs, files in os.walk(start_dir):
-        for name in files:
-            fullname = os.path.join(root, name)
-            if name in aDict:
-                aDict[name] += [fullname]
+        for filename in files:
+            fullname = os.path.join(root, filename)
+            key = myMd5(fullname)
+            if key in aDict:
+                aDict[key] += [fullname]
             else:
-                aDict[name] = [fullname]
+                aDict[key] = [fullname]
     return aDict
 
 
 def dictOfSizes(file_list):
+    """Returns a dict of filenames, with the file size as key. Each key thus has a list of all files of that size. """
     sizes = [(os.stat(filename).st_size, filename) for filename in file_list]
 
     d = {}
